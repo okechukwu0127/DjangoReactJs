@@ -25,11 +25,19 @@ import { isEmpty, isArray, isObject, size } from "lodash";
 import Alert from "@material-ui/lab/Alert";
 
 
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Slide from "@material-ui/core/Slide";
+
+
 export default class AddEditNotePage extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { title: null, content: null, owner: null, EditNotes: null };
+    this.state = { title: null, message: null, owner: null, EditNotes: null ,noteSaved:false};
 
     this.NoteId = this.props.match.params.note_id;
 
@@ -43,7 +51,7 @@ export default class AddEditNotePage extends Component {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     };
-    console.log(this.state);
+    console.log('this.state');
 
     fetch("/api/get-note?note_id=" + note_id, requestOptions)
       .then((response) => response.json())
@@ -56,28 +64,33 @@ export default class AddEditNotePage extends Component {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: this.state.title,
-        content: this.state.content,
+        message: this.state.message,
         owner: this.state.owner,
       }),
     };
-    console.log(this.state);
+   // console.log(this.state);
 
     fetch("/api/add-note", requestOptions)
       .then((response) => response.json())
-      .then((data) => console.log(data));
+      .then((data) => {
+
+
+        this.setState({noteSaved:true})
+      });
   };
 
-  handleButtonUpdateNotepadPressed = () => {
+  handleButtonUpdateNotepadPressed = (note_id) => {
     const requestOptions = {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: this.state.title,
-        content: this.state.content,
+        message: this.state.message,
         owner: this.state.owner,
+        node_id: note_id,
       }),
     };
-    console.log(this.state);
+    console.log(note_id);
 
     fetch("/api/update-note", requestOptions)
       .then((response) => response.json())
@@ -120,6 +133,34 @@ export default class AddEditNotePage extends Component {
           width: "100%", */
         }}
       >
+        <Dialog
+          open={this.state.noteSaved}
+          onClose={() => {
+            this.setState({noteSaved:false})
+          }}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {this.state.message + " added"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              You have successfully added the Note
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                this.props.history.push("/");
+              }}
+              color="primary"
+            >
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
+        ;
         <div style={{ marginLeft: "-8.1%", marginTop: 50 }}>
           <BottomNavigation
             //value={value}
@@ -138,7 +179,6 @@ export default class AddEditNotePage extends Component {
             <BottomNavigationAction label="Exit" icon={<LockOpenIcon />} />
           </BottomNavigation>
         </div>
-
         {isObject(this.state.EditNotes) ? (
           size(this.state.EditNotes) == 1 ? (
             <Alert
@@ -156,7 +196,6 @@ export default class AddEditNotePage extends Component {
             </Alert>
           ) : null
         ) : null}
-
         <Card
           style={{
             maxWidth: 475,
@@ -170,7 +209,7 @@ export default class AddEditNotePage extends Component {
           <CardContent>
             <div style={{ alignSelf: "center" }}>
               <h3>
-                {this.NoteId ? "EDIT" : "ADD"} NOTEPAD CONTENT {}{" "}
+                {this.NoteId ? "EDIT" : "ADD"} NOTEPAD CONTENT {" :: "}
               </h3>
             </div>
             <hr style={{ border: "0.5px solid #ccc" }} />
@@ -206,7 +245,7 @@ export default class AddEditNotePage extends Component {
                 style={{ width: 97 + "%", marginTop: 40 }}
                 placeholder="Message"
                 onChange={(text) =>
-                  this.setState({ content: text.target.value })
+                  this.setState({ message: text.target.value })
                 }
               />
 
@@ -247,7 +286,7 @@ export default class AddEditNotePage extends Component {
                 color="primary"
                 size="large"
                 onClick={() => {
-                  this.handleButtonUpdateNotepadPressed();
+                  this.handleButtonUpdateNotepadPressed(this.NoteId);
                 }}
                 startIcon={<SaveIcon />}
               >
