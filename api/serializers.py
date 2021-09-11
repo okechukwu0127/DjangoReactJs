@@ -12,14 +12,14 @@ class NotepadSerializer(serializers.ModelSerializer):
 class CreateNotepadSerializer(serializers.ModelSerializer):
 
      class Meta:
-         modal =  Notepad
+         model =  Notepad
          fields = ('title','message','owner')
 
 
 
 class UpdateNotepadSerializer(serializers.ModelSerializer):
-    note_id =serializers.CharField(validators=[])
+    #note_id =serializers.CharField(validators=[])
 
     class Meta:
-         modal =  Notepad
+         model =  Notepad
          fields = ('note_id','title','message','owner')

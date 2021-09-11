@@ -81,13 +81,13 @@ export default class AddEditNotePage extends Component {
 
   handleButtonUpdateNotepadPressed = (note_id) => {
     const requestOptions = {
-      method: "PATCH",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: this.state.title,
         message: this.state.message,
         owner: this.state.owner,
-        node_id: note_id,
+        note_id: note_id,
       }),
     };
     console.log(note_id);
@@ -209,7 +209,7 @@ export default class AddEditNotePage extends Component {
           <CardContent>
             <div style={{ alignSelf: "center" }}>
               <h3>
-                {this.NoteId ? "EDIT" : "ADD"} NOTEPAD CONTENT {" :: "}
+                {this.NoteId ? "EDIT" : "ADD"} NOTEPAD CONTENT {" ::"}
               </h3>
             </div>
             <hr style={{ border: "0.5px solid #ccc" }} />

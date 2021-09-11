@@ -17,6 +17,50 @@ class NotepadView(generics.ListAPIView): #CreateAPIView
     queryset= Notepad.objects.all()
     serializer_class = NotepadSerializer
 
+
+
+
+class UpdateNoteView2(APIView):  
+    serializer_class = NotepadSerializer
+    look_up_kwarg = 'note_id'
+
+    def post(self,request,format=None):
+        serializers = self.serializer_class(data=request.data)
+
+        #queryset = Notepad.objects.all()
+        
+        if serializers.is_valid():
+            note_id = serializers.data.get('note_id') #request.GET.get(self.look_up_kwarg)
+            queryset = Notepad.objects.filter(note_id=note_id)#Notepad.objects.all(note_id=note_id)
+
+            if not queryset.exists():
+                return Response({'msg':'Notepas not found :: ','id':serializers.data.get('note_id')}, status = status.HTTP_404_NOT_FOUND)
+            
+            title = serializers.data.get('title')
+            message = serializers.data.get('message')
+            owner = serializers.data.get('owner')
+            note_id = serializers.data.get('note_id')
+
+            notepad = queryset[0]
+
+            notepad.title = title
+            notepad.message = message
+            notepad.owner = owner
+            notepad.save(update_fields=['title','message','owner'])
+
+
+
+            return Response({ 'Note Not Found':'Invalid Note ID'}, status = status.HTTP_404_NOT_FOUND)
+
+
+
+        
+
+
+        return Response({ 'Bad Request':'Invalid data'}, status = status.HTTP_400_BAD_REQUEST)
+
+
+
 class UpdateNoteView(APIView):
     serializer_class = UpdateNotepadSerializer
     #look_up_kwarg ='note_id'
@@ -32,7 +76,7 @@ class UpdateNoteView(APIView):
             queryset = Notepad.objects.all(note_id=note_id)
 
             if not queryset.exists():
-                return Response({'msg':'Room not found'}, status = status.HTTP_404_NOT_FOUND)
+                return Response({'msg':'Notepas not found'}, status = status.HTTP_404_NOT_FOUND)
             
             notepad = queryset[0]
 
@@ -45,7 +89,7 @@ class UpdateNoteView(APIView):
 
 
 
-        return Response({ 'Bad Request':'Invalid data'}, status = status.HTTP_400_BAD_REQUEST)
+        return Response({ 'Bad Request':'Invalid data','data':serializers.is_valid()}, status = status.HTTP_400_BAD_REQUEST)
         
 
 
