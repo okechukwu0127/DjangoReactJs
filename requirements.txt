@@ -1,0 +1,33 @@
+ Application is broken down into 3 micro-services in three different folders
+
+
+ 1. api/ => this houses the api calls (a sub python app)
+ 2. frontend/ => this houses the UI and the frontend routes which the user communicates with (a sub python app)
+ 3. Notepad/  => the main Python project
+
+
+NOTE :: if the node_modules dir is not present inside the /frontend dir or you notice some UI related error while runnning
+        the application, simple go into the /frontend dir and run the following command
+        => npm install.  This installs all the needed packages to run the reactjs frontend part of the application
+
+        
+
+
+ REQUIREMENTS
+
+ python3 (v3)
+ pip3
+ node  (v14.17.0)
+ npm (v6.14.13)
+
+
+ to run the application, navigate to the root dir and run the following command 
+ => /python3 manage.py runserver 
+        (CLI MESSAGE =>Starting development server at http://127.0.0.1:8000/)
+
+Navigate to /frontend dir on another CLI/Terminal and run th following command to run the react server
+=> npm run dev
+       (CLI MESSAGE => webpack 5.52.0 compiled successfully in 3252 ms )
+
+
+Once the two servers have been initiated, navigate to http://127.0.0.1:8000/ to see the applicatoin runnning
